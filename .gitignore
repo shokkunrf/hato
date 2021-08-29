@@ -1,2 +1,4 @@
-broker/data
-broker/log
+broker/data/*
+!broker/data/.gitkeep
+broker/log/*
+!broker/log/.gitkeep
