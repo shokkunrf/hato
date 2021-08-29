@@ -1,0 +1,13 @@
+version: "3"
+services:
+  broker:
+    image: "eclipse-mosquitto:2.0.11"
+    volumes:
+      - "./broker/config:/mosquitto/config"
+      - "./broker/data:/mosquitto/data"
+      - "./broker/log:/mosquitto/log"
+    ports:
+      - "1883:1883"
+    expose:
+      - "1883"
+    user: "1000:1000"
