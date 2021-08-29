@@ -1,9 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"hato/config"
+	"hato/mqtt"
+	"log"
 )
 
 func main() {
-	fmt.Println("Hello")
+	brokerConfig, err := config.GetBrokerConfig()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	publisher := mqtt.MakePublisher(brokerConfig)
+	err = publisher.Connect()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer func() {
+		publisher.Disconnect()
+	}()
 }
