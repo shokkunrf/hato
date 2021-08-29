@@ -1,5 +1,16 @@
 version: "3"
 services:
+  bot:
+    image: "golang:1.16.7-alpine3.14"
+    volumes:
+      - "./bot:/workspace"
+    working_dir: "/workspace"
+    command: >
+      sh -c '
+      go build -o /usr/local/bin/bot &&
+      /usr/local/bin/bot'
+    depends_on:
+      - "broker"
   broker:
     image: "eclipse-mosquitto:2.0.11"
     volumes:
