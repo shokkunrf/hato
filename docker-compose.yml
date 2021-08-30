@@ -2,6 +2,10 @@ version: "3"
 services:
   bot:
     image: "golang:1.16.7-alpine3.14"
+    environment:
+      BROKER_HOST: "broker"
+      BROKER_PORT: "1883"
+      BROKER_TOPIC: $BROKER_TOPIC
     volumes:
       - "./bot:/workspace"
     working_dir: "/workspace"
