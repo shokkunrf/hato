@@ -6,6 +6,8 @@ services:
       BROKER_HOST: "broker"
       BROKER_PORT: "1883"
       BROKER_TOPIC: $BROKER_TOPIC
+      DISCORD_BOT_ID: $DISCORD_BOT_ID
+      DISCORD_TRIGGER_EMOJI: $DISCORD_TRIGGER_EMOJI
     volumes:
       - "./bot:/workspace"
     working_dir: "/workspace"
