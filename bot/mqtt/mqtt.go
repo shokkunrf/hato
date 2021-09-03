@@ -1,7 +1,6 @@
 package mqtt
 
 import (
-	"fmt"
 	"hato/config"
 
 	paho "github.com/eclipse/paho.mqtt.golang"
@@ -26,7 +25,7 @@ func MakePublisher(conf *config.BrokerConfig) *Publisher {
 func (p *Publisher) Connect() error {
 	token := p.client.Connect()
 	if token.Wait() && token.Error() != nil {
-		return fmt.Errorf("[Publisher] %s", token.Error())
+		return token.Error()
 	}
 	return nil
 }
@@ -43,7 +42,7 @@ func (p *Publisher) Publish(subTopic string, message string) error {
 	token := p.client.Publish(topic, 2, false, message)
 
 	if token.Wait() {
-		return fmt.Errorf("[Publisher] %s", token.Error())
+		return token.Error()
 	}
 	return nil
 }
