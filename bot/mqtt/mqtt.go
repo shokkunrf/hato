@@ -8,8 +8,8 @@ import (
 )
 
 type Publisher struct {
-	Client       paho.Client
-	PrimaryTopic string
+	client       paho.Client
+	primaryTopic string
 }
 
 func MakePublisher(conf *config.BrokerConfig) *Publisher {
@@ -18,13 +18,13 @@ func MakePublisher(conf *config.BrokerConfig) *Publisher {
 	c := paho.NewClient(opts)
 
 	return &Publisher{
-		Client:       c,
-		PrimaryTopic: conf.Topic,
+		client:       c,
+		primaryTopic: conf.Topic,
 	}
 }
 
 func (p *Publisher) Connect() error {
-	token := p.Client.Connect()
+	token := p.client.Connect()
 	if token.Wait() && token.Error() != nil {
 		return fmt.Errorf("[Publisher] %s", token.Error())
 	}
@@ -32,15 +32,15 @@ func (p *Publisher) Connect() error {
 }
 
 func (p *Publisher) Disconnect() {
-	p.Client.Disconnect(250)
+	p.client.Disconnect(250)
 }
 
 func (p *Publisher) Publish(subTopic string, message string) error {
-	topic := p.PrimaryTopic
+	topic := p.primaryTopic
 	if subTopic != "" {
 		topic += "/" + subTopic
 	}
-	token := p.Client.Publish(topic, 2, false, message)
+	token := p.client.Publish(topic, 2, false, message)
 
 	if token.Wait() {
 		return fmt.Errorf("[Publisher] %s", token.Error())
