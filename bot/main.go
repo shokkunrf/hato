@@ -20,9 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	defer func() {
-		publisher.Disconnect()
-	}()
+	defer publisher.Disconnect()
 
 	discordConfig, err := config.GetDiscordConfig()
 	if err != nil {
