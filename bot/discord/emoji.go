@@ -35,7 +35,9 @@ func GetEmojiSet() (*EmojiSet, error) {
 	reverseEmojiMap := make(map[string]string)
 	for _, row := range csvAry[1:] {
 		emojiMap[row[0]] = row[1]
-		reverseEmojiMap[row[1]] = row[0]
+		if reverseEmojiMap[row[1]] == "" {
+			reverseEmojiMap[row[1]] = row[0]
+		}
 	}
 
 	return &EmojiSet{
