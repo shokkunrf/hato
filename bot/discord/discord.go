@@ -82,7 +82,8 @@ func (b *Bot) onEmojiAdd(session *discordgo.Session, event *discordgo.MessageRea
 
 	// 特定のemojiのときのみ通す
 	triggerEmoji, _ := strconv.Unquote(`"` + b.emojiSet.EmojiMap[b.TriggerEmojiAlias] + `"`)
-	if event.Emoji.Name != triggerEmoji {
+	if triggerEmoji != "" && event.Emoji.Name != triggerEmoji ||
+		triggerEmoji == "" && event.Emoji.Name != b.TriggerEmojiAlias {
 		return
 	}
 
@@ -90,12 +91,20 @@ func (b *Bot) onEmojiAdd(session *discordgo.Session, event *discordgo.MessageRea
 	str := regexp.MustCompile(`<@\!\d*>`).ReplaceAllString(message.Content, "")
 	messageContent := strings.TrimSpace(str)
 
-	for _, reaction := range message.Reactions {
-		key := strings.Trim(fmt.Sprintf("%+q", reaction.Emoji.Name), `"`)
-		subTopic := b.emojiSet.ReverseEmojiMap[key]
-		if subTopic == "" || subTopic == b.TriggerEmojiAlias {
-			continue
+	if len(message.Reactions) == 1 {
+		b.publisher.Publish("", messageContent)
+	} else {
+		for _, reaction := range message.Reactions {
+			code := strings.Trim(fmt.Sprintf("%+q", reaction.Emoji.Name), `"`)
+			subTopic, isFound := b.emojiSet.ReverseEmojiMap[code]
+			if !isFound {
+				subTopic = reaction.Emoji.Name
+			}
+
+			if subTopic == b.TriggerEmojiAlias {
+				continue
+			}
+			b.publisher.Publish(subTopic, messageContent)
 		}
-		b.publisher.Publish(subTopic, messageContent)
 	}
 }
